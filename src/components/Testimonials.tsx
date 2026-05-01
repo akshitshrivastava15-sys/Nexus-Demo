@@ -1,0 +1,50 @@
+const testimonials = [
+  {
+    quote: "A complete rebuild in five days. The result outperformed everything we'd spent months building before.",
+    author: "Sarah Chen",
+    role: "CEO, Luminary"
+  },
+  {
+    quote: "Conversions up 4x. That's not a typo. The design just works differently when it's built on real data.",
+    author: "Marcus Webb",
+    role: "Head of Growth, Arcline"
+  },
+  {
+    quote: "They didn't just design our site. They defined our brand. World-class doesn't begin to cover it.",
+    author: "Elena Voss",
+    role: "Brand Director, Helix"
+  }
+]
+
+export const Testimonials = () => {
+  return (
+    <section className="py-32 px-8 lg:px-16 bg-black">
+      <div className="flex flex-col items-center mb-24">
+        <div className="liquid-glass rounded-full px-3.5 py-1 text-xs font-medium text-white font-body mb-6">
+          What They Say
+        </div>
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading italic text-white tracking-tight leading-[0.9] text-center">
+          Don't take our word for it.
+        </h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {testimonials.map((t, i) => (
+          <div key={i} className="liquid-glass rounded-2xl p-8 flex flex-col h-full">
+            <p className="text-white/80 font-body font-light text-sm italic mb-8 leading-relaxed flex-grow">
+              "{t.quote}"
+            </p>
+            <div>
+              <div className="text-white font-body font-medium text-sm mb-1">
+                {t.author}
+              </div>
+              <div className="text-white/50 font-body font-light text-xs">
+                {t.role}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
