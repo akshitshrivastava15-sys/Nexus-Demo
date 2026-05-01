@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus | Global Dental Architecture & Innovation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <style>
+        :root {
+            --primary: #007AFF;
+            --accent: #5AC8FA;
+            --bg-dark: #020205;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --text-main: #FFFFFF;
+            --text-dim: rgba(255, 255, 255, 0.5);
+            --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3");
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; scroll-behavior: auto; }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.4;
+        }
+
+        /* --- IMMERSIVE BACKGROUND --- */
+        .viewport-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0a0a1f 0%, #020205 100%);
+        }
+
+        .blob {
+            position: absolute; border-radius: 50%; will-change: transform;
+            filter: blur(120px); opacity: 0.25;
+        }
+        .blob-1 { width: 80vw; height: 80vw; background: var(--primary); top: -20%; left: -20%; }
+        .blob-2 { width: 70vw; height: 70vw; background: #7000FF; bottom: -20%; right: -20%; }
+        .blob-3 { width: 50vw; height: 50vw; background: var(--accent); top: 20%; left: 30%; }
+
+        .glass-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: var(--noise); opacity: 0.035; pointer-events: none; z-index: 100;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; top: 32px; left: 50%; transform: translateX(-50%);
+            width: 94%; max-width: 1200px; padding: 12px 32px;
+            background: rgba(255, 255, 255, 0.01);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            display: flex; justify-content: space-between; align-items: center; z-index: 2000;
+        }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-links a:hover { color: #fff; }
+        .btn-premium {
+            background: #fff; color: #000; padding: 12px 28px; border-radius: 50px;
+            font-size: 0.8rem; font-weight: 800; text-decoration: none; transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .btn-premium:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 15px 30px rgba(255,255,255,0.15); }
+
+        /* --- SECTIONS --- */
+        section { padding: 0 24px; max-width: 1300px; margin: 0 auto; position: relative; }
+        .v-spacer { height: 35vh; }
+        .full-height { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+
+        h1 { font-size: clamp(4rem, 15vw, 10rem); font-weight: 800; line-height: 0.85; letter-spacing: -6px; margin-bottom: 40px; }
+        h2 { font-size: clamp(2.5rem, 10vw, 6rem); font-weight: 800; line-height: 0.9; letter-spacing: -3px; margin-bottom: 24px; }
+        .gradient-text { background: linear-gradient(180deg, #fff 30%, rgba(255,255,255,0.2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p.hero-lead { font-size: 1.6rem; color: var(--text-dim); max-width: 700px; font-weight: 400; margin-bottom: 60px; line-height: 1.5; }
+
+        /* --- GLASS COMPONENTS --- */
+        .glass-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px); border-radius: 48px; padding: 64px;
+            position: relative; overflow: hidden;
+        }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 32px; }
+
+        .feature-box {
+            padding: 56px; border-radius: 40px; background: rgba(255,255,255,0.01);
+            border: 1px solid var(--glass-border); transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .feature-box:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.2); transform: translateY(-15px); }
+        .feature-box h3 { font-size: 2rem; margin: 24px 0 16px; letter-spacing: -1px; }
+        .feature-box p { color: var(--text-dim); font-size: 1.1rem; line-height: 1.6; }
+
+        /* --- SCROLL MAPPING (The "A Lot of Things" Section) --- */
+        .scroll-map-container { position: relative; width: 100%; height: 800px; margin: 100px 0; border-radius: 60px; overflow: hidden; border: 1px solid var(--glass-border); }
+        #world-map { width: 100%; height: 100%; background: #05050a url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='rgba(255,255,255,0.1)'/%3E%3C/svg%3E"); }
+        .map-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, transparent 40%, #020205 100%); pointer-events: none; }
+        .map-data-card { position: absolute; bottom: 40px; left: 40px; width: 300px; padding: 24px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid var(--glass-border); }
+
+        /* --- PINNED SCROLL ANIMATION --- */
+        .pin-container { height: 300vh; position: relative; }
+        .pin-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .pin-content { font-size: clamp(3rem, 15vw, 12rem); font-weight: 900; letter-spacing: -10px; opacity: 0; }
+
+        /* --- STATISTICS --- */
+        .stat-huge { font-size: 10rem; font-weight: 800; line-height: 1; letter-spacing: -8px; }
+
+        /* --- FOOTER --- */
+        footer { padding: 150px 24px 80px; text-align: center; border-top: 1px solid var(--glass-border); }
+
+        /* --- ANIMATION HELPERS --- */
+        .reveal { opacity: 0; transform: translateY(60px); }
+        .line-draw { height: 1px; background: var(--glass-border); width: 0; margin: 40px 0; }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.3); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .pulse-marker { position: absolute; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 20px var(--accent); }
+        .pulse-marker::after { content: ''; position: absolute; width: 100%; height: 100%; border: 2px solid var(--accent); border-radius: 50%; animation: pulse-ring 2s infinite; }
+
+        @media (max-width: 768px) {
+            h1 { letter-spacing: -3px; }
+            .v-spacer { height: 15vh; }
+            .feature-box { padding: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-overlay"></div>
+    <div class="viewport-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav>
+        <div class="logo">Nexus</div>
+        <div class="nav-links">
+            <a href="#vision">Vision</a>
+            <a href="#ecosystem">Ecosystem</a>
+            <a href="#lab">The Lab</a>
+            <a href="#pricing">Ventures</a>
+        </div>
+        <a href="#connect" class="btn-premium">Partner With Us</a>
+    </nav>
+
+    <!-- HERO: THE FIRST IMPRESSION -->
+    <section class="full-height">
+        <h1 class="reveal gradient-text">Architecture<br>For Growth.</h1>
+        <p class="reveal hero-lead">Nexus is a specialized venture studio engineering the digital dominance of elite clinical practices. We don't build sites; we build high-converting assets.</p>
+        <div class="line-draw reveal"></div>
+        <div style="display: flex; gap: 40px;" class="reveal">
+            <div>
+                <span style="font-size: 0.7rem; color: var(--accent); letter-spacing: 4px; text-transform: uppercase;">[ GLOBAL FOOTPRINT ]</span>
+                <p style="font-size: 1.8rem; font-weight: 700;">32 Districts</p>
+            </div>
+            <div>
+                <span style="font-size: 0.7rem; color: var(--accent); letter-spacing: 4px; text-transform: uppercase;">[ ASSETS MANAGED ]</span>
+                <p style="font-size: 1.8rem; font-weight: 700;">$140M+</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="v-spacer"></div>
+
+    <!-- VISION: PINNED SCROLL EFFECT -->
+    <div class="pin-container" id="vision">
+        <div class="pin-sticky">
+            <div class="pin-content gradient-text">UNRIVALED.</div>
+            <div class="pin-content gradient-text" style="position: absolute;">PRECISION.</div>
+            <div class="pin-content gradient-text" style="position: absolute;">EVOLUTION.</div>
+        </div>
+    </div>
+
+    <div class="v-spacer"></div>
+
+    <!-- ECOSYSTEM: INTERACTIVE MAP -->
+    <section id="ecosystem">
+        <h2 class="reveal">The Nexus Network.</h2>
+        <p class="reveal hero-lead" style="font-size: 1.2rem;">Our proprietary deployment engine ensures clinical supremacy across every major healthcare hub.</p>
+        
+        <div class="scroll-map-container reveal">
+            <div id="world-map">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14035.782803875!2d79.4124!3d28.3976!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390a166299d638a1%3A0xc3f1857947702f54!2sIzzatnagar%2C%20Bareilly%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1714560000000!5m2!1sen!2sin" 
+                    width="100%" 
+                    height="100%" 
+                    style="border:0; filter: invert(90%) hue-rotate(180deg) brightness(0.7) contrast(1.2); opacity: 0.6;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <div class="map-overlay"></div>
+            <div class="map-data-card reveal">
+                <p style="font-size: 0.7rem; letter-spacing: 2px; color: var(--accent);">[ BAREILLY HQ ]</p>
+                <p style="font-size: 1.5rem; font-weight: 800; margin-top: 8px;">Izzatnagar District</p>
+                <div style="height: 2px; width: 100%; background: rgba(255,255,255,0.1); margin: 15px 0;"></div>
+                <p style="font-size: 0.8rem; color: var(--text-dim);">The central clinical deployment hub for Northern India operations.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="v-spacer"></div>
+
+    <!-- THE LAB: DEEP TECHNICAL CONTENT -->
+    <section id="lab">
+        <h2 class="reveal gradient-text">Inside the Nexus Lab.</h2>
+        <div class="grid-3">
+            <div class="feature-box reveal">
+                <div style="font-size: 1.5rem;">01</div>
+                <h3>Lumina Render</h3>
+                <p>Proprietary rendering engine that delivers high-fidelity surgical 3D models at 120fps on mobile browsers.</p>
+            </div>
+            <div class="feature-box reveal">
+                <div style="font-size: 1.5rem;">02</div>
+                <h3>Behavioral AI</h3>
+                <p>Real-time UI adjustment based on patient gaze tracking and interaction heatmaps.</p>
+            </div>
+            <div class="feature-box reveal">
+                <div style="font-size: 1.5rem;">03</div>
+                <h3>Nexus-Sync</h3>
+                <p>Instantaneous database synchronization with Dentrix, OpenDental, and 40+ medical platforms.</p>
+            </div>
+            <div class="feature-box reveal">
+                <div style="font-size: 1.5rem;">04</div>
+                <h3>Glass-Security</h3>
+                <p>Military-grade HIPAA compliance encryption that operates at the kernel level of our hosting stack.</p>
+            </div>
+            <div class="feature-box reveal">
+                <div style="font-size: 1.5rem;">05</div>
+                <h3>SEO-Core</h3>
+                <p>Semantic search optimization that targets procedural intent rather than just keywords.</p>
+            </div>
+            <div class="feature-box reveal">
+                <div style="font-size: 1.5rem;">06</div>
+                <h3>Global CDN</h3>
+                <p>Low-latency content delivery via our private edge network, ensuring sub-100ms load times globally.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="v-spacer"></div>
+
+    <!-- PROOF: HUGE STATISTICS -->
+    <section style="overflow: hidden;">
+        <div class="stat-huge reveal gradient-text" id="stat-trigger">88%</div>
+        <p class="reveal hero-lead" style="margin-top: -20px;">Average increase in patient acquisition within the first 6 months of partnership.</p>
+        
+        <div class="line-draw reveal" style="width: 100%; margin: 80px 0;"></div>
+        
+        <div class="grid-3">
+            <div class="reveal">
+                <h4 style="font-size: 3rem;">12.4x</h4>
+                <p style="color: var(--text-dim);">ROI Benchmark</p>
+            </div>
+            <div class="reveal">
+                <h4 style="font-size: 3rem;">0.2s</h4>
+                <p style="color: var(--text-dim);">Latency Cap</p>
+            </div>
+            <div class="reveal">
+                <h4 style="font-size: 3rem;">24/7</h4>
+                <p style="color: var(--text-dim);">Human Oversight</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="v-spacer"></div>
+
+    <!-- PRICING/PARTNERSHIP -->
+    <section id="pricing">
+        <div style="text-align: center; margin-bottom: 100px;">
+            <h2 class="reveal gradient-text">Investment Tiers.</h2>
+            <p class="reveal hero-lead" style="margin: 0 auto;">Select the tier that matches your clinical ambition.</p>
+        </div>
+
+        <div class="grid-3" style="align-items: flex-start;">
+            <!-- Tier 1 -->
+            <div class="glass-card reveal" style="padding: 40px; border-radius: 40px;">
+                <p style="font-size: 0.7rem; letter-spacing: 3px; opacity: 0.5;">[ FOUNDATION ]</p>
+                <h3 style="font-size: 3rem; margin: 20px 0;">₹6,000<span style="font-size: 1rem; opacity: 0.4;">+ setup</span></h3>
+                <ul style="list-style: none; color: var(--text-dim); line-height: 2; margin-bottom: 40px;">
+                    <li>✓ Custom Liquid Glass UI</li>
+                    <li>✓ Mobile Performance Stack</li>
+                    <li>✓ Basic Local SEO</li>
+                    <li>✓ Standard HIPAA Support</li>
+                </ul>
+                <a href="#" class="btn-premium" style="display: block; text-align: center;">Inquire</a>
+            </div>
+            <!-- Tier 2 -->
+            <div class="glass-card reveal" style="padding: 60px 40px; border-radius: 40px; border-color: var(--primary); background: rgba(0,122,255,0.05);">
+                <div style="position: absolute; top: 20px; right: 20px; background: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 0.6rem;">HIGH GROWTH</div>
+                <p style="font-size: 0.7rem; letter-spacing: 3px; opacity: 0.8;">[ DOMINANCE ]</p>
+                <h3 style="font-size: 3rem; margin: 20px 0;">₹12,000<span style="font-size: 1rem; opacity: 0.4;">+ setup</span></h3>
+                <ul style="list-style: none; color: var(--text-dim); line-height: 2; margin-bottom: 40px;">
+                    <li style="color: #fff;">✓ Everything in Foundation</li>
+                    <li style="color: #fff;">✓ Behavioral AI Integration</li>
+                    <li style="color: #fff;">✓ Advanced Procedural SEO</li>
+                    <li style="color: #fff;">✓ Practice Management Sync</li>
+                </ul>
+                <a href="#" class="btn-premium" style="display: block; text-align: center; background: var(--primary); color: #fff;">Inquire</a>
+            </div>
+            <!-- Tier 3 -->
+            <div class="glass-card reveal" style="padding: 40px; border-radius: 40px;">
+                <p style="font-size: 0.7rem; letter-spacing: 3px; opacity: 0.5;">[ EMPIRE ]</p>
+                <h3 style="font-size: 3rem; margin: 20px 0;">₹23,000<span style="font-size: 1rem; opacity: 0.4;">+ setup</span></h3>
+                <ul style="list-style: none; color: var(--text-dim); line-height: 2; margin-bottom: 40px;">
+                    <li>✓ Multi-Location Architecture</li>
+                    <li>✓ Private Patient Network</li>
+                    <li>✓ Full Acquisition Strategy</li>
+                    <li>✓ Board-Level Advisory</li>
+                </ul>
+                <a href="#" class="btn-premium" style="display: block; text-align: center;">Contact Partner</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section id="connect" style="text-align: center; margin-top: 150px;">
+        <div class="glass-card reveal" style="background: radial-gradient(circle at 50% 0%, rgba(0, 122, 255, 0.2), transparent); padding: 120px 40px;">
+            <h2 class="gradient-text">Ready to lead?</h2>
+            <p class="hero-lead" style="margin: 0 auto 60px;">Nexus is currently selecting 2 practice partners for the upcoming quarter. Secure your digital legacy today.</p>
+            <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
+                <a href="#" class="btn-premium" style="padding: 24px 64px; font-size: 1.2rem;">Begin Consultation</a>
+                <a href="#" style="color: #fff; text-decoration: none; font-size: 1.1rem; padding: 24px; display: flex; align-items: center;">Read the Whitepaper &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo" style="opacity: 0.2; margin-bottom: 32px; font-size: 3rem;">NEXUS</div>
+        <p style="color: var(--text-dim); font-size: 0.8rem; letter-spacing: 4px;">GLOBAL DENTAL VERTICAL &bull; EST 2026 &bull; LONDON &bull; NEW YORK &bull; TOKYO</p>
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+        // --- CUSTOM SMOOTH SCROLL BEHAVIOR ---
+        // (Simulating high-end momentum scroll)
+        
+        // --- HERO REVEAL ---
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+            tl.to('.reveal', {
+                opacity: 1, y: 0, duration: 1.8, stagger: 0.2, ease: "expo.out"
+            });
+        });
+
+        // --- SECTION REVEALS ---
+        gsap.utils.toArray('.reveal').forEach(elem => {
+            gsap.to(elem, {
+                opacity: 1, y: 0, duration: 1.5, ease: "expo.out",
+                scrollTrigger: {
+                    trigger: elem, start: "top 95%", toggleActions: "play none none none"
+                }
+            });
+        });
+
+        // --- PINNED TEXT SEQUENCE (VISION) ---
+        const pinTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".pin-container", start: "top top", end: "bottom bottom", scrub: 1
+            }
+        });
+        const pinContents = gsap.utils.toArray('.pin-content');
+        pinContents.forEach((content, i) => {
+            pinTl.to(content, { opacity: 1, duration: 1 }, i)
+                 .to(content, { opacity: 0, duration: 1 }, i + 0.8);
+        });
+
+        // --- MAP PARALLAX & ANIMATION ---
+        gsap.to("#world-map", {
+            backgroundPosition: "50% 100%",
+            scrollTrigger: {
+                trigger: ".scroll-map-container", start: "top bottom", end: "bottom top", scrub: 2
+            }
+        });
+
+        // --- HUGE STAT COUNTER ---
+        gsap.from("#stat-trigger", {
+            textContent: 0, duration: 4, ease: "power4.out",
+            snap: { textContent: 1 },
+            scrollTrigger: {
+                trigger: "#stat-trigger", start: "top 80%"
+            },
+            onUpdate: function() {
+                this.targets()[0].innerHTML = Math.ceil(this.targets()[0].textContent) + "%";
+            }
+        });
+
+        // --- MOUSE TRACKING (Liquid Feel) ---
+        let lastMove = 0;
+        window.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastMove < 20) return; // 50fps throttle
+            lastMove = now;
+
+            const x = (e.clientX / window.innerWidth - 0.5) * 60;
+            const y = (e.clientY / window.innerHeight - 0.5) * 60;
+
+            gsap.to('.viewport-bg', { x: x * 0.5, y: y * 0.5, duration: 3, ease: "power2.out" });
+            gsap.to('.blob-1', { x: x, y: y, duration: 4, ease: "power1.out" });
+            gsap.to('.blob-2', { x: -x, y: -y, duration: 5, ease: "power1.out" });
+        });
+
+        // --- LINE DRAW ANIMATION ---
+        gsap.utils.toArray('.line-draw').forEach(line => {
+            gsap.to(line, {
+                width: "100%", duration: 2, ease: "power4.inOut",
+                scrollTrigger: { trigger: line, start: "top 90%" }
+            });
+        });
+
+    </script>
+</body>
+</html>
